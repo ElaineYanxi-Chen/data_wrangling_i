@@ -1,0 +1,72 @@
+---
+title: "Data Manipulation with `dplyr`"
+author: "Elaine Yanxi Chen"
+date: "2022-09-26"
+output: github_document
+---
+
+```{r, echo = FALSE}
+library(tidyverse)
+```
+
+
+Once you've imported data, you're going to need to do some cleaning up.
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  fig.width = 6,
+  fig.asp = 0.6,
+  out.width = "90"
+)
+```
+
+## Overview {.tabset .tabset-pills}
+
+### Learning Objectives
+
+Clean and organize data using `dplyr` verbs and piping. 
+
+```{r}
+options(tibble.print_min = 3)
+
+litters_data =
+  read_csv("data/FAS_litters.csv")
+litters_data = 
+  janitor::clean_names(litters_data)
+
+pups_data = read_csv("data/FAS_pups.csv")
+pups_data = janitor::clean_names(pups_data)
+```
+
+### `select`
+
+`select` is useful when we only want to select certain *columns* from the dataset for the analysis.
+
+```{r}
+select(litters_data, group, litter_number, gd0_weight, pups_born_alive)
+```
+
+Now we have 4 variables instead of 8. Here we didn't save it as a separate dataframe for now.
+
+We could also specify a range of variable to include:
+
+```{r}
+select(litters_data, group:gd_of_birth)
+```
+
+This looks at the positioning of the variables inside a dataset. It selects every column within the range specified. Need to know the arrangement of variables in the dataset. 
+
+You can also specify columns you would like to remove:
+
+```{r}
+select(litters_data, -pups_survive)
+```
+
+In addition, you could also rename variables as part of this process:
+
+```{r}
+select(litters_data, GROUP = group, LiTtEr_NuMbEr = litter_number)
+```
+
+If all you want to do is rename something, you can use `rename` instead of `select`. This will rename the variables 
