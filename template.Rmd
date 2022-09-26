@@ -3,7 +3,7 @@ title: "Data Import"
 output: github_document
 ---
 
-```{r, echo=FALSE}
+```{r, echo = FALSE}
 library(tidyverse)
 ```
 
@@ -19,3 +19,42 @@ litters_df = read_csv("data/FAS_litters.csv")
 litters_df = janitor::clean_names(litters_df)
 ```
 
+
+Look at the data
+
+```{r}
+litters_df
+
+head(litters_df)
+tail(litters_df)
+```
+
+
+Helpful way to view the whole dataset, but don't have it in the rmd file because it creates a new window and creates problems when knit.
+
+```{r,  eval = FALSE}
+View(litters_df)
+```
+
+
+The `skimr` package gives a quick summary and overview of the entire dataset. 
+
+```{r}
+skimr::skim(litters_df)
+```
+
+
+`read_csv` options..
+
+can treat random numbers as missing observations when data are coded weirdly
+
+Information in the first couple of rows, can skip how many rows at the beginning of the spreadsheet
+
+```{r, eval = FALSE}
+read_csv("data/FAS_litters.csv", na = c("", "NA", 999, 88), skip = 2)
+```
+
+Update with the col_type argument since it only reads the first 1000 rows and decide what variable type that is, which could be wrong. 
+
+
+## Other file formats 
