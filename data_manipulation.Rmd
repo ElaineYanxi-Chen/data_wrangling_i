@@ -68,5 +68,27 @@ In addition, you could also rename variables as part of this process:
 ```{r}
 select(litters_data, GROUP = group, LiTtEr_NuMbEr = litter_number)
 ```
+Here, we have a tibble with only these two variables.
 
-If all you want to do is rename something, you can use `rename` instead of `select`. This will rename the variables 
+If all you want to do is rename something, you can use `rename` instead of `select`. This will rename the variables we put, and keep everything else.
+
+```{r}
+rename(litters_data, GROUP = group, LiTtEr_NuMbEr = litter_number)
+```
+
+
+There are some helper functions that go along with `select`; These three functions: `starts_with()`, `ends_with()`, and `contains()` are used very often, especially when there are variables named with suffixes or other standard patterns:
+
+```{r}
+select(litters_data, starts_with("gd"))
+select(litters_data, ends_with("weight"))
+```
+
+Can read more using `?select_helpers`
+
+Another frequently used function is `everything()`, which is handy for reorganizing columns without discarding anything (pull some variables to the front of the dataset before everything else):
+
+```{r}
+select(litters_data, litter_number, pups_survive, everything())
+```
+
