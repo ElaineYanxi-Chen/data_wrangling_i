@@ -1,0 +1,18 @@
+---
+title: "TIdy Data"
+author: "Elaine Yanxi Chen"
+date: "2022-09-27"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+options(tibble.print_min = 5)
+```
+
+We will first read in the pulse data.
+
+```{r}
+pulse_df = haven::read_sas("data/public_pulse_data.sas7bdat")
+```
+
