@@ -92,3 +92,108 @@ Another frequently used function is `everything()`, which is handy for reorganiz
 select(litters_data, litter_number, pups_survive, everything())
 ```
 
+### `filter`
+
+Select rows, certain observations, one individual. We use filter to achieve this. Select observations that meet certain criteria, using logical expressions. Use of comparison operators (`>`, `>=`, `<`, `<=`, `==`, and `!=`). Need to distinguish between assigning a value (a single equal sign and equal to.
+
+Another operator to filter is in (`%in%`). Delete or remove missing data with `is.na()`. Now test some conditions, truth, go into the dataset; false, do not include. Logical operators and `&`, or `|`, or negate using `!`.
+
+* `gd_of_birth == 20` to filter out all observations with gestational day of birth of 20
+* `pups_born_alive >= 2`
+* `pups_survive != 4`
+* `!((pups_survive == 4) & (gd_of_birth == 20))`
+* `group %in% c("Con7", "Con8")`
+* `group == "Con7" & gd_of_birth == 20`
+
+```{r}
+filter(litters_data, gd_of_birth == 20)
+```
+
+```{r}
+filter(litters_data, group == "Con7" & gd_of_birth == 20)
+```
+
+Be careful of dropping missing data, consider whether it makes sense. Can use filter or `drop_na` from the `tidyr` package
+
+* `drop_na(litters_data)` will remove any row with a missing value; global drop of missing data.
+* `drop_na(litters_data, wt_increase)` will remove rows for which `wt_increase` is missing.
+
+### `mutate`
+
+```{r}
+mutate(litters_data,
+       wt_gain = gd18_weight - gd0_weight,
+       group = str_to_lower(group),
+       # wt_gain_kg = wt_gain * 2.2
+)
+```
+
+
+### `arrange`
+
+Arrange the rows in your data according to the values in one or more columns, similar to sorting in SAS.
+
+```{r}
+head(arrange(litters_data, group, pups_born_alive), 10)
+```
+
+You can also sort in descending order if you'd like.
+
+```{r}
+head(arrange(litters_data, desc(group), pups_born_alive), 10)
+```
+
+
+### ` %>%`
+
+Connect multiple functions or data manipulations together and output a single dataset at the end. 
+
+```{r}
+litters_data_raw = read_csv("data/FAS_litters.csv",
+                            col_types = "ccddiiii")
+litters_data_clean_names = 
+  janitor::clean_names(litters_data_raw)
+litters_data_selected_cols = select(litters_data_clean_names, -pups_survive)
+litters_data_with_vars =
+  mutate(
+    litters_data_selected_cols,
+    wt_gain = gd18_weight - gd0_weighht,
+    group = str_to_lower(group))
+litters_data_with_vars_without_missing =
+  drop_na(litters_data_with_vars, wt_gain)
+litters_data_with_vars_without_missing
+```
+
+Another way to do this before tidyverse is:
+
+```{r}
+litters_data_clean =
+  drop_na(
+    mutate(
+      select(
+        janitor::clean_names(
+          read_csv("data/FAS_litters.csv", col_types = 
+                     "ccddiiii")
+        ),
+        -pups_survive
+      ),
+      wt_gain = gd18_weight - gd0_weight,
+      group = str_to_lower(group)
+    ),
+    wt_gain
+  )
+```
+
+Now we use the pipe to achieve the same goal of obtaining a final dataset.
+
+```{r}
+litters_data = 
+  read_csv("data/FAS_litters.csv", col_types = "ccddiiii") %>% 
+  janitor::clean_names() %>% 
+  select(-pups_survive) %>% 
+  mutate(
+    wt_gain = gd18_weight - gd0_weight,
+    group = str_to_lower(group)) %>% 
+  drop_na(wt_gain)
+```
+
